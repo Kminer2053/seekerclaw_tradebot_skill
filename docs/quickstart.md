@@ -14,7 +14,7 @@
 기존 `HEARTBEAT.md` 내용을 **지우지 않습니다.** 트레이딩 팩은 **파일 맨 아래에만** 추가합니다.
 
 1. `HEARTBEAT.md`를 연 뒤, 상단·중간의 **기존 하트비트·체크리스트는 수정하지 않는다.**
-2. `docs/heartbeat-template.md`의 **「복사해 넣을 블록」** 전체(주석 `<!-- seekerclaw-tradebot-pack:begin/end -->` 포함)를 파일 **끝**에 붙인다.
+2. `docs/HEARTBEAT-APPEND.md` 파일 **전체**(또는 GitHub raw 동일 경로)를 `HEARTBEAT.md` 파일 **끝**에 붙인다. 설명은 `docs/heartbeat-template.md`를 본다.
 3. 이미 `seekerclaw-tradebot-pack:begin` 이 있다면 **그 한 쌍 사이만** 최신 템플릿으로 교체하고, 블록을 두 번 넣지 않는다.
 4. 하트비트 **주기**(예: 5분)는 SeekerClaw 앱 설정을 따른다. 템플릿의 `max_live_swap_attempt` / `max_new_draft`는 트레이딩 팩 내부 한도이며, 필요 시에만 숫자를 조정한다.
 
