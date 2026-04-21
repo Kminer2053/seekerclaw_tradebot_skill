@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 별도 `bot-core` 없이 SeekerClaw 기본 기능과 커스텀 스킬만으로 승인 기반 트레이딩 루프를 안정적으로 운영한다.
+**Goal:** 별도 백엔드 서비스 없이 SeekerClaw 기본 기능과 커스텀 스킬만으로 승인 기반 트레이딩 루프를 안정적으로 운영한다.
 
 **Architecture:** 모든 판단과 실행은 `skills/seekerclaw-*` + 워크스페이스 `memory/tradebot-*.json` + `HEARTBEAT.md` 조합으로 처리한다. 실행 게이트는 `status-guard`가 단일 진입점이 되고, `draft-and-approve`와 `execute-approved`는 승인/중복방지 파일을 공통 계약으로 공유한다. 실패/거절/한도 이벤트는 `ops-recovery`가 상태 파일을 갱신하고 다음 루프를 `hold` 또는 `recover_and_resume`으로 통제한다.
 
@@ -237,7 +237,7 @@ git commit -m "docs: lock heartbeat template for safe skill-only execution"
 ## Spec Coverage Self-Review
 
 - 승인 기반 실행, 중복 방지, 복구 절차, 하트비트 분기, 운영 체크리스트까지 모두 개별 Task로 매핑됨
-- `bot-core`/HTTP 의존 항목은 전부 제외됨
+- 외부 트레이딩 백엔드/HTTP 의존 항목은 전부 제외됨
 - 모든 작업은 문서/스킬 변경으로 제한되어 현재 목표(스킬 전용)와 일치
 
 ## No Placeholder Check

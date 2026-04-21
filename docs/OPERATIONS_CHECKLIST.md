@@ -5,7 +5,7 @@
 ## Pre-flight (라이브 전)
 
 - `docs/quickstart.md`와 본 문서를 읽었다.
-- `HEARTBEAT.md`에 `docs/heartbeat-template.md` 절차가 반영됐다.
+- `HEARTBEAT.md` **하단**에 `docs/heartbeat-template.md`의 `seekerclaw-tradebot-pack` 구간이 **한 번만** 추가됐다(기존 하트비트 본문은 삭제·덮어쓰기 없음).
 - `memory/tradebot-state.json` 스키마·폴백을 `docs/contracts/skill-io-contracts.md`로 확인했다.
 - 텔레그램(또는 앱) **명시적 승인** 없이 라이브 스왑하지 않는다.
 
@@ -14,7 +14,7 @@
 - `seekerclaw-status-guard`: `proceed` / `hold` / `kill_and_hold` 기록(`memory/tradebot-last-guard.json`).
 - **hold** 또는 **kill_and_hold**면 이번 주기는 스왑·신규 주문 없음.
 - `proceed`일 때만 초안·승인·실행 파이프라인(`seekerclaw-draft-and-approve` → 승인 → `seekerclaw-execute-approved`).
-- 이상 징후 시 `seekerclaw-ops-recovery` 후 `tradebot-state.json`·`tradebot-heartbeat-log.md` 갱신.
+- 이상 징후 시 `seekerclaw-ops-recovery` 후 `memory/tradebot-state.json`·`memory/tradebot-heartbeat-log.md` 갱신.
 
 ## Incident response (장애·복구)
 

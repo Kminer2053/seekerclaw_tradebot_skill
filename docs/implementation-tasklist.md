@@ -2,7 +2,7 @@
 
 ## 범위
 
-이 저장소는 **SeekerClaw 마크다운 스킬 + 문서**만 다룹니다. `bot-core` HTTP 연동, 별도 Node 하트비트 런타임, `pnpm`/`tsx` 실행기는 **범위에서 제외**했습니다.
+이 저장소는 **SeekerClaw 마크다운 스킬 + 문서**만 다룹니다. 외부 HTTP 트레이딩 백엔드 연동, 별도 Node 하트비트 런타임, `pnpm`/`tsx` 실행기는 **범위에서 제외**했습니다.
 
 ## Task 1: 스킬 패키지 정리
 
@@ -41,7 +41,7 @@
 
 ## Task 6: 문서
 
-- [x] `README.md`, `docs/quickstart.md` — bot-core 미사용 명시
+- [x] `README.md`, `docs/quickstart.md` — 온디바이스·스킬 전용 안내
 - [ ] (선택) 운영 체크리스트 `docs/OPERATIONS_CHECKLIST.md` 신규 작성
 
 ## 최종 완료 기준

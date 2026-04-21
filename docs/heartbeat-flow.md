@@ -1,6 +1,6 @@
 # Heartbeat Flow
 
-별도 서버 API 없이, SeekerClaw 하트비트가 **스킬 순서**와 **워크스페이스 상태 파일**로 분기합니다. 최종 절차 문구는 `docs/heartbeat-template.md` **복사용 운영 블록**과 동일하게 둡니다.
+별도 서버 API 없이, SeekerClaw 하트비트가 **스킬 순서**와 **워크스페이스 상태 파일**로 분기합니다. 절차 문구는 `docs/heartbeat-template.md`의 **Tradebot pack** 섹션과 맞춥니다. `HEARTBEAT.md`에는 기존 업무를 유지한 채 그 **아래**에 해당 섹션만 붙인다.
 
 ## 주기당 한도(템플릿과 동일)
 
