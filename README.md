@@ -178,12 +178,68 @@ Your file should look like:
 
 ---
 
-### Usage (typical flow)
+### How to use
+
+#### Day-to-day operation (after setup is complete)
+
+Once the four skills and `HEARTBEAT.md` are in place, the agent handles the loop automatically each heartbeat. Your job:
+
+| What you do | When |
+|-------------|------|
+| Watch for Telegram messages from the agent | Each cycle when a draft is ready |
+| Read the draft summary the agent sends | Before deciding |
+| Reply **`/approve`** (or tap the app approval UI) | Only when you genuinely agree |
+| Ignore or let it expire if you disagree | Agent auto-holds next cycle |
+| Check `memory/tradebot-heartbeat-log.md` | Anytime you want a quick audit trail |
+
+#### Approving a trade (Telegram example)
+
+When the agent has a ready draft it sends something like:
+
+```
+[Tradebot] Draft ready for approval
+Scenario: swap 10 USDC → SOL at ≤ 0.045 USDC/SOL
+Expires: 15 min
+Reply /approve to confirm, or ignore to cancel.
+```
+
+Reply **`/approve`** — the agent picks it up on the next heartbeat and calls `seekerclaw-execute-approved`.  
+Say nothing or reply anything else → the draft expires and the agent starts fresh next cycle.
+
+> **Do not copy-paste `/approve` from old chat logs.** Each draft has a unique `approval_id` the agent validates. Stale approvals are rejected.
+
+#### Checking status on demand
+
+Ask the agent at any time:
+
+```text
+Run seekerclaw-status-guard and tell me the current decision and any active alerts.
+```
+
+The skill reads `memory/tradebot-state.json` and returns `proceed` / `hold` / `kill_and_hold` plus a list of reasons.
+
+#### Emergency stop
+
+If something looks wrong, open `memory/tradebot-state.json` and set `"severity": "critical"`:
+
+```json
+{
+  "severity": "critical",
+  "entry_blocked": true,
+  "live_swap_blocked": true,
+  "alerts": ["manual_halt"],
+  "recommended_actions": []
+}
+```
+
+The guard returns `kill_and_hold` immediately on the next heartbeat. No live swap can run while this is set.
+
+#### Flow overview
 
 1. **Heartbeat fires** → agent reads `HEARTBEAT.md` (existing tasks first, then Tradebot pack).
 2. **`seekerclaw-status-guard`** → `proceed` / `hold` / `kill_and_hold` from `memory/tradebot-state.json` (or safe fallback if missing).
-3. If `proceed` and no pending scenario → **`seekerclaw-draft-and-approve`** writes `memory/tradebot-pending-scenario.json` and notifies you (e.g. Telegram).
-4. You send **`/approve`** (or use the app’s explicit approval UI) when you accept the draft.
+3. If `proceed` and no pending scenario → **`seekerclaw-draft-and-approve`** writes `memory/tradebot-pending-scenario.json` and notifies you via Telegram.
+4. You send **`/approve`** (or use the app's explicit approval UI) when you accept the draft.
 5. **`seekerclaw-execute-approved`** runs only after guard passes again and idempotency rules in [docs/idempotency-policy.md](docs/idempotency-policy.md) allow it.
 6. On errors → **`seekerclaw-ops-recovery`** and update state; follow [docs/OPERATIONS_CHECKLIST.md](docs/OPERATIONS_CHECKLIST.md).
 
@@ -405,11 +461,67 @@ seekerclaw_tradebot_skill 패키지로 워크스페이스를 구성해 줘.
 
 ---
 
-### 사용 흐름 요약
+### 사용 방법
+
+#### 설정 완료 후 일상 운영
+
+스킬 4개와 `HEARTBEAT.md`가 준비되면 에이전트가 매 하트비트마다 자동으로 루프를 돌립니다. 사용자가 직접 해야 하는 일은 다음이 전부입니다.
+
+| 해야 할 일 | 타이밍 |
+|------------|--------|
+| 텔레그램으로 오는 에이전트 알림 확인 | 초안이 준비된 주기마다 |
+| 에이전트가 보내 준 거래 초안 내용 검토 | 승인 전 |
+| **`/approve`** 전송 (또는 앱 승인 UI 탭) | 초안에 동의할 때만 |
+| 아무것도 하지 않거나 무시 | 거절하거나 보류하고 싶을 때 — 초안이 자동 만료됨 |
+| `memory/tradebot-heartbeat-log.md` 열람 | 실행 기록을 빠르게 확인하고 싶을 때 |
+
+#### 거래 승인하기 (텔레그램 예시)
+
+초안이 준비되면 에이전트가 텔레그램으로 다음과 같이 알립니다.
+
+```
+[Tradebot] 승인 대기 중인 거래 초안이 있습니다.
+시나리오: 10 USDC → SOL, 상한가 0.045 USDC/SOL
+유효 시간: 15분
+/approve 로 확인하거나, 무시하면 취소됩니다.
+```
+
+**`/approve`** 를 보내면 다음 하트비트 때 `seekerclaw-execute-approved`가 호출됩니다.  
+아무 말 안 하거나 다른 내용을 보내면 초안이 만료되고 에이전트는 다음 주기에 새로 시작합니다.
+
+> **과거 대화창의 `/approve` 를 복붙하지 마세요.** 초안마다 고유한 `approval_id`가 있어 에이전트가 검증합니다. 만료된 승인은 자동으로 거절됩니다.
+
+#### 현재 상태 수동 확인
+
+언제든지 에이전트에게 물어볼 수 있습니다.
+
+```text
+seekerclaw-status-guard를 실행해서 현재 decision과 활성화된 alert를 알려줘.
+```
+
+스킬이 `memory/tradebot-state.json`을 읽어 `proceed` / `hold` / `kill_and_hold` 판정과 이유 목록을 돌려줍니다.
+
+#### 긴급 정지
+
+문제가 생겼다 싶으면 `memory/tradebot-state.json`을 열고 `"severity"`를 `"critical"`로 바꿉니다.
+
+```json
+{
+  "severity": "critical",
+  "entry_blocked": true,
+  "live_swap_blocked": true,
+  "alerts": ["manual_halt"],
+  "recommended_actions": []
+}
+```
+
+다음 하트비트에서 가드가 즉시 `kill_and_hold`를 반환합니다. 이 값이 설정된 동안은 어떤 라이브 스왑도 실행되지 않습니다.
+
+#### 흐름 개요
 
 1. **하트비트 주기마다** 에이전트가 `HEARTBEAT.md`를 읽습니다 (기존 항목 먼저, 트레이딩 팩 다음).
 2. **`seekerclaw-status-guard`** 실행 → `proceed` / `hold` / `kill_and_hold` 판정.
-3. `proceed`이고 대기 중인 초안이 없으면 **`seekerclaw-draft-and-approve`**가 `memory/tradebot-pending-scenario.json`에 거래 초안을 작성하고 텔레그램으로 알립니다.
+3. `proceed`이고 대기 중인 초안이 없으면 **`seekerclaw-draft-and-approve`**가 거래 초안을 작성하고 텔레그램으로 알립니다.
 4. 사용자가 **`/approve`** (또는 앱의 명시적 승인 UI)로 승인합니다.
 5. 가드를 다시 통과하고 [docs/idempotency-policy.md](docs/idempotency-policy.md)의 멱등성 규칙을 만족할 때만 **`seekerclaw-execute-approved`**가 실행됩니다.
 6. 오류 발생 시 **`seekerclaw-ops-recovery`**를 실행하고 [docs/OPERATIONS_CHECKLIST.md](docs/OPERATIONS_CHECKLIST.md)에 따라 조치합니다.
