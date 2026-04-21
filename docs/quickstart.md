@@ -2,7 +2,9 @@
 
 별도 HTTP 백엔드·엔드포인트나 Node 전용 런타임은 **필요 없습니다**. SeekerClaw 앱 워크스페이스에 스킬과 하트비트만 맞추면 됩니다.
 
-**라이브 전 필수:** [`docs/OPERATIONS_CHECKLIST.md`](OPERATIONS_CHECKLIST.md)(Pre-flight·주기 점검·장애 대응·재개 기준).
+**쉬운 말:** 문서에 나오는 **드라이런**은 **「연습 모드」**(실제 스왑·체결 없이 절차만 도는 상태)라고 보면 됩니다. README 한국어 절의 **쉬운 말로 (용어)** 표를 함께 보세요.
+
+**라이브(실거래) 전 필수:** [`docs/OPERATIONS_CHECKLIST.md`](OPERATIONS_CHECKLIST.md)(사전 점검·매 주기 점검·장애 대응·재개 기준).
 
 ## 1) 스킬 설치
 
@@ -32,7 +34,7 @@
 
 - `critical`에 해당하는 상태면 **실행·스왑 금지**
 - 텔레그램(또는 앱)에서 명시적 승인 없이 **라이브 스왑 금지**
-- 소액·페이퍼(시뮬레이션) 모드가 있다면 라이브 전에 반드시 드라이런
+- 소액·페이퍼(시뮬레이션) 모드가 있다면 라이브 전에 반드시 **연습 모드**(실거래 없이 절차만)로 검증
 - `memory/tradebot-idempotency.json`은 `records` 맵으로 `approval_id`별 상태를 둔다(`docs/idempotency-policy.md`). 재시작 후에도 동일 승인이면 **기존 키 재사용·성공 시 재실행 없음**; `last_result.ok`가 거짓이면 **새 키 없이** `seekerclaw-ops-recovery`로 처리한다.
 
 ## 5) 점검 포인트
@@ -42,7 +44,10 @@
 - **수동 검증:** `memory/tradebot-state.json`을 잠시 제거하거나 이름을 바꾼 뒤 `seekerclaw-status-guard`만 실행한다. 이 경우 출력 `decision`은 **`hold` 또는 `kill_and_hold`이면 정상**이고, **`proceed`이면 오류**(폴백이 반영되지 않은 것으로 본다).
 - **수동 검증(승인 없는 실행):** `seekerclaw-execute-approved`를 **`/approve`(또는 앱의 동등한 명시적 승인 UI) 없이** 호출하는 시나리오를 만든다. 출력은 **`decision`이 `hold`**, `reasons`에 `approval_missing` 등 승인 누락 사유, `actions`에 `request_explicit_approval`이 포함되는 것이 정상이다(라이브 스왑 없음).
 
-## 6) 10주기 드라이런(라이브 전)
+## 6) 실거래 전 — 하트비트 **10번 연습** 점검
 
-- **페이퍼/드라이런 모드**에서 하트비트를 **10주기** 연속 실행한다(명시적 승인·라이브 스왑 없음).
-- 검증: 10주기 후 **execute without approval(무승인 `seekerclaw-execute-approved`에 의한 라이브 체결 시도) = 0건**이어야 한다. 로그, `memory/tradebot-heartbeat-log.md`, 필요 시 `memory/tradebot-idempotency.json`으로 집계한다. 0이 아니면 템플릿·가드·승인 게이트를 점검한 뒤 다시 10주기 드라이런한다.
+README에서는 **「드라이런」**이라 부르기도 하는데, 뜻은 **연습 모드**(실제 돈 나가는 스왑 없음, 승인도 일부러 안 보내는 식으로 통제)입니다.
+
+- **연습 조건**에서 하트비트를 **10번** 연속 돌립니다(설정에 따라 명시적 승인 없음·`live_swap_blocked` 유지 등).
+- **통과 기준:** 10번이 지난 뒤 **승인 없이** `seekerclaw-execute-approved`가 **라이브 체결을 시도한 횟수 = 0**이어야 합니다. 로그, `memory/tradebot-heartbeat-log.md`, 필요 시 `memory/tradebot-idempotency.json`으로 세면 됩니다.
+- 0이 아니면 `HEARTBEAT.md` 블록·가드·승인 게이트를 고친 뒤 **다시 10번부터** 반복합니다.
