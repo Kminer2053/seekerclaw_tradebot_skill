@@ -39,11 +39,11 @@ SeekerClaw 워크스페이스의 `HEARTBEAT.md`에는 **이미 다른 주기 업
 |------|------|
 | `state_file_missing` | `memory/tradebot-state.json` 부재·파싱 실패. 체크리스트 1·2에 따라 hold/kill 쪽으로 수렴; 라이브 경로 진입 전에 가드가 막아야 한다. |
 | `approval_missing` | 텔레그램 `/approve` 등 명시적 승인 없이 실행 스킬을 타지 않음. `seekerclaw-execute-approved`는 hold·`request_explicit_approval` 쪽이 정상. |
-| `rpc_error_burst` | 단기간 RPC 오류 반복. 주기 건너뛰기·백오프; 동일 오류 3주기 이상이면 `severity: critical`·라이브 스왑 중단·다음 가드 `kill_and_hold` 유도. 상세는 `docs/OPERATIONS_CHECKLIST.md`. |
+| `rpc_error_burst` | 동일 RPC 오류 연속 3주기 시 `severity: critical`·라이브 스왑 중단·다음 가드 `kill_and_hold` 유도. 백오프 적용. 상세는 `docs/OPERATIONS_CHECKLIST.md`. |
 
 ### 실패 처리(연속 오류)
 
-- 연속 3주기 이상 동일 오류면 `severity: critical`, 라이브 스왑 중단; 다음 **seekerclaw-status-guard**는 **kill_and_hold**가 되도록 한다.
+- 동일 오류 연속 3주기면 `severity: critical`, 라이브 스왑 중단; 다음 **seekerclaw-status-guard**는 **kill_and_hold**가 되도록 한다.
 - 운영자 확인 전까지 **hold** 또는 **kill_and_hold** 유지.
 
 ### 실행 금지(상세)

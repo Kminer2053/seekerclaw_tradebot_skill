@@ -42,7 +42,7 @@
 ## Task 6: 문서
 
 - [x] `README.md`, `docs/quickstart.md` — 온디바이스·스킬 전용 안내
-- [ ] (선택) 운영 체크리스트 `docs/OPERATIONS_CHECKLIST.md` 신규 작성
+- [x] (선택) 운영 체크리스트 `docs/OPERATIONS_CHECKLIST.md` 작성 완료
 
 ## 최종 완료 기준
 

@@ -44,7 +44,7 @@
 
 ## Phase 5: 운영 문서
 
-- [ ] `docs/OPERATIONS_CHECKLIST.md`(선택) 추가
+- [x] `docs/OPERATIONS_CHECKLIST.md`(선택) 추가 완료
 - [ ] `docs/quickstart.md`와 동기화
 
 ---

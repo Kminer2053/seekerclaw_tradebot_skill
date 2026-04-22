@@ -22,7 +22,7 @@
 | --- | --- |
 | `daily_limit_reached` | **hold** — UTC 자정 리셋까지 라이브 중단(예: `live_swap_blocked: true`). |
 | `scenario_expired` | pending 정리(`memory/tradebot-pending-scenario.json` 초기화) 후 **re-draft**·재승인. |
-| `rpc_error` 연속 3회 | `severity: critical` 갱신 — 다음 가드에서 **kill_and_hold**에 해당하도록 상태를 맞춘다. |
+| `rpc_error` 동일 오류 연속 3주기 | `severity: critical` 갱신 — 다음 가드에서 **kill_and_hold**에 해당하도록 상태를 맞춘다. |
 
 - 그 외: `seekerclaw-ops-recovery` 출력의 `reasons`·`actions`·`evidence.events_reviewed`를 따른다.
 

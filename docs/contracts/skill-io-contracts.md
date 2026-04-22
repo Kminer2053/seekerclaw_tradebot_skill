@@ -147,7 +147,7 @@
 
 - `daily_limit_reached` → **hold**(UTC 리셋까지)
 - `scenario_expired` → pending 정리 후 re-draft
-- `rpc_error` 연속 3회 → `severity: critical` → 다음 **seekerclaw-status-guard**는 **kill_and_hold**에 해당
+- `rpc_error` 동일 오류 연속 3주기 → `severity: critical` → 다음 **seekerclaw-status-guard**는 **kill_and_hold**에 해당
 
 **kill_and_hold**는 이 스킬의 `decision` 값이 아니라 가드 출력이다.
 
@@ -164,3 +164,11 @@
   }
 }
 ```
+
+---
+
+## 식별자 관계
+
+- `draft_scenario_id`: 초안 생성 시 부여된다. 운영자 승인 명령(`/approve <draft_scenario_id>`)의 대상이다.
+- `approval_id`: 승인 확정 시 `draft_scenario_id`를 그대로 사용하거나, 앱이 별도로 부여한 식별자를 사용한다. `memory/tradebot-idempotency.json`의 키로 기록한다.
+- 기본 규칙: 별도 변환 로직이 없으면 `approval_id = draft_scenario_id`로 간주한다.

@@ -34,6 +34,7 @@ requires:
 4. 텔레그램(또는 앱 알림)으로 운영자에게 요약 전송: 무엇을, 왜, 어떤 리스크로 제안하는지.
    - 언어: `memory/tradebot-operator-preferences.json`의 `notification_language`를 우선 사용한다.
    - 파일이 없거나 값이 유효하지 않으면 한국어(`ko`)를 기본으로 사용한다.
+   - `fallback_language`가 지정되어 있으면 보조 언어로 짧게 병기할 수 있다.
 5. 승인 안내 문구에는 `draft_scenario_id`를 반드시 포함한다.
    - 권장 승인 명령: `/approve <draft_scenario_id>`
    - 단일 pending만 있을 때는 `/approve`도 허용할 수 있으나, 다중 pending 가능성을 피하려면 ID 포함 명령을 기본으로 안내한다.

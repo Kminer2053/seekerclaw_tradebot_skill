@@ -1,6 +1,6 @@
 ---
 name: seekerclaw-ops-recovery
-description: "스왑 거절·RPC 오류·한도·만료 등 이상 발생 시 원인을 수집하고 hold 또는 recover_and_resume을 결정할 때 사용한다. 운영 절차는 docs/OPERATIONS_CHECKLIST.md와 동일 용어(hold, recover_and_resume, kill_and_hold)를 쓴다."
+description: "스왑 거절·RPC 오류·한도·만료 등 이상 발생 시 원인을 수집하고 hold 또는 recover_and_resume를 결정할 때 사용한다. 운영 절차는 docs/OPERATIONS_CHECKLIST.md와 동일 용어(hold, recover_and_resume, kill_and_hold)를 쓴다."
 version: "0.2.0"
 emoji: "🔧"
 requires:
@@ -27,7 +27,7 @@ requires:
    | --- | --- |
    | `daily_limit_reached` | **hold** — UTC 자정 리셋까지 라이브 중단(`live_swap_blocked: true` 등). |
    | `scenario_expired` | pending 정리(`memory/tradebot-pending-scenario.json` 초기화) 후 **re-draft**·재승인. |
-   | `rpc_error` **연속 3회** (`rpc_error(3x)`) | `memory/tradebot-state.json`에서 **`severity: critical`** 갱신. 이후 **`seekerclaw-status-guard`는 `kill_and_hold`**가 되도록 알림·필드를 맞춘다. 본 스킬 출력 `decision`은 즉시 재개가 불가하면 **`hold`**. |
+   | `rpc_error` **동일 오류 연속 3주기** (`rpc_error(3x)`) | `memory/tradebot-state.json`에서 **`severity: critical`** 갱신. 이후 **`seekerclaw-status-guard`는 `kill_and_hold`**가 되도록 알림·필드를 맞춘다. 본 스킬 출력 `decision`은 즉시 재개가 불가하면 **`hold`**. |
 
    - **일반 거절·기타 한도**: 상황에 따라 위와 같이 **hold** 또는 상태 갱신.
    - **운영자 `/deny` 또는 사용자 거절**: pending 삭제, idempotency에서 해당 승인 종료 처리.
