@@ -34,8 +34,10 @@
 
 - `critical`에 해당하는 상태면 **실행·스왑 금지**
 - 텔레그램(또는 앱)에서 명시적 승인 없이 **라이브 스왑 금지**
+- 승인 명령은 가능하면 **`/approve <scenario_id>`** 형식을 사용한다(대상 식별용).
 - 소액·페이퍼(시뮬레이션) 모드가 있다면 라이브 전에 반드시 **연습 모드**(실거래 없이 절차만)로 검증
 - `memory/tradebot-idempotency.json`은 `records` 맵으로 `approval_id`별 상태를 둔다(`docs/idempotency-policy.md`). 재시작 후에도 동일 승인이면 **기존 키 재사용·성공 시 재실행 없음**; `last_result.ok`가 거짓이면 **새 키 없이** `seekerclaw-ops-recovery`로 처리한다.
+- 운영자 알림 언어는 `memory/tradebot-operator-preferences.json`의 `notification_language`로 제어하고, 값이 없으면 한국어(`ko`)를 기본으로 사용한다.
 
 ## 5) 점검 포인트
 

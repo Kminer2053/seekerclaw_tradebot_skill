@@ -32,7 +32,12 @@ requires:
 2. `draft_scenario_id`를 생성한다(예: 타임스탬프 + 짧은 랜덤).
 3. `memory/tradebot-pending-scenario.json`에 저장한다.
 4. 텔레그램(또는 앱 알림)으로 운영자에게 요약 전송: 무엇을, 왜, 어떤 리스크로 제안하는지.
-5. 승인은 **텔레그램 `/approve` 등 앱이 제공하는 확인 절차**로만 받는다. 채팅 속 암시적 동의는 승인으로 치지 않는다.
+   - 언어: `memory/tradebot-operator-preferences.json`의 `notification_language`를 우선 사용한다.
+   - 파일이 없거나 값이 유효하지 않으면 한국어(`ko`)를 기본으로 사용한다.
+5. 승인 안내 문구에는 `draft_scenario_id`를 반드시 포함한다.
+   - 권장 승인 명령: `/approve <draft_scenario_id>`
+   - 단일 pending만 있을 때는 `/approve`도 허용할 수 있으나, 다중 pending 가능성을 피하려면 ID 포함 명령을 기본으로 안내한다.
+6. 승인은 **텔레그램 `/approve`(또는 앱 동등 명시적 승인 UI)**로만 받는다. 채팅 속 암시적 동의는 승인으로 치지 않는다.
 
 ## 출력 계약
 

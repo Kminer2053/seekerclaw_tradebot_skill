@@ -17,6 +17,11 @@ requires:
 ## 선행 조건
 
 - **승인 원천 고정:** 유효한 실행은 텔레그램 **`/approve`**(또는 앱이 제공하는 **동등한 명시적 승인 UI**—전용 승인 버튼·확인 화면 등)에서만 낸 승인만 인정한다. 일반 채팅·암시적 동의·문맥상의 “OK”는 승인이 **아니다**.
+- **승인 대상 식별:** 승인 시 `/approve <scenario_id>`를 우선 사용한다.
+  - `<scenario_id>`가 있으면 해당 ID와 `memory/tradebot-pending-scenario.json`의 pending 항목을 매칭해 승인한다.
+  - `<scenario_id>`가 없으면 pending이 정확히 1건일 때만 승인으로 인정한다.
+  - pending이 0건이면 `decision=hold`, `reasons`에 `approval_missing` 포함.
+  - pending이 2건 이상이면 `decision=hold`, `reasons`에 `approval_target_ambiguous` 포함.
 - **멱등 경로(필수):** 라이브 스왑 전에 `approval_id`(또는 `docs/idempotency-policy.md` 등 정책이 정한 **동등한 승인·정책 식별자**)를 **반드시** 확보하고 기록한다. 식별자를 안전하게 고정·기록하기 전에는 스왑을 시작하지 않는다.
 - 실행 직전에 `seekerclaw-status-guard`를 **반드시** 다시 실행해 `decision=proceed`
 - `memory/tradebot-idempotency.json`의 `records[approval_id]`를 확인한다. 구조는 `docs/idempotency-policy.md`를 따른다. 이미 `last_result.ok === true`이면 **즉시 종료**(라이브 재실행 없음). **앱 재시작 후에도** 동일 `approval_id`면 파일에 있는 **기존 `idempotency_key`만** 쓰고 새 키를 만들지 않는다. `last_result.ok === false`이면 **새 키를 발급하지 않고** `seekerclaw-ops-recovery`로 넘긴다.
@@ -54,6 +59,18 @@ requires:
   "decision": "hold",
   "reasons": ["approval_missing"],
   "actions": ["request_explicit_approval"]
+}
+```
+
+### 승인 대상 불명확 시(출력 계약 예시)
+
+pending이 여러 건인데 `/approve`에 `scenario_id`가 없으면 실행하지 않고 아래 형태로 **보류**한다.
+
+```json
+{
+  "decision": "hold",
+  "reasons": ["approval_target_ambiguous"],
+  "actions": ["request_explicit_approval_with_scenario_id"]
 }
 ```
 
